@@ -653,8 +653,9 @@ int main(int argc, char* argv[])
 					out.close();
 					
 					inp.open("ConfigFile.cfg");
-					string line, str;
+					string line, line1, str;
 					line.clear();
+					line1.clear();
 					list.clear();
 					size_t found=0, found1=0;
 					while(!inp.eof())
@@ -663,14 +664,16 @@ int main(int argc, char* argv[])
 						found=line.find("PathArchive");
 						if(found!=-1)
 						{
-							found1=line.find_first_not_of(" ");
-							dir1=line.substr(found1, line.size()-found1);
+							line1=line.substr(found1+11);
+							found1=line1.find_first_not_of(" ");
+							dir1=line1.substr(found1, line.size()-found1);
 						}
 						found=line.find("PathCurrent");
 						if(found!=-1)
 						{
-							found1=line.find_first_not_of(" ");
-							dir2=line.substr(found1, line.size()-found1);
+							line1=line.substr(found1+11);
+							found1=line1.find_first_not_of(" ");
+							dir2=line1.substr(found1, line.size()-found1);
 						}
 						list+=line+"\n";
 					}
