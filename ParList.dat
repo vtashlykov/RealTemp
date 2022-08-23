@@ -2,11 +2,13 @@ Parameters list for narrowband signal processing:
 Y = 2021
 PATH_TO_DATA = /mnt/data/orda/experiments/2021/202111/filtered/01-03
 FIRST_DAY = 1101 (in 4-digit format: MonthDay)
-LAST_DAY = 1103 (in 4-digit format: MonthDay)
+LAST_DAY = 1101 (in 4-digit format: MonthDay)
 INTEGRATION_TIME = 10 [minutes]
 NUMBER_OF_SAMPLES = 2000 
 GROUND_CLUTTER_END = 150 (Last sample of ground clutter)
 GROUND_CLUTTER_START = 0 (First sample of ground clutter)
 LAG_TRUNCATE = 5 (Number of noise ACF significant lags)
-NUMBER_OF_THREADS = 8
+NUMBER_OF_THREADS = 6
 PATH_TO_RESULT_FILES = /mnt/data/users/tashlykov/
+UT0 = 0
+NUMBER_OF_INTERVALS = 144
