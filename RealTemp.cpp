@@ -1194,6 +1194,7 @@ int main(int argc, char* argv[])
 			Info[u].clear();
 		}
 
+		vector<string>().swap(Date);
 		ListMap.clear();
 		vector<map<RadarChannelInfo, vec> >().swap(Chi);
 		vector<map<RadarChannelInfo, vec> >().swap(Chi1);
