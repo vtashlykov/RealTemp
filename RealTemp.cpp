@@ -695,11 +695,11 @@ int main(int argc, char* argv[])
 					
 					if(it==UT0)
 					{
-						cmd="rm current_*";
+						cmd="rm "+dir1+"current_*";
 						system(cmd.c_str());
 						
-						// cmd="rm "+dir1+dir3+"*.dat";
-						// system(cmd.c_str());
+						cmd="rm "+dir2+"*.dat";
+						system(cmd.c_str());
 					}
 
 					cmd="./ise -s List_"+to_string(omp_get_thread_num())\
