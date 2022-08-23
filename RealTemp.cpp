@@ -31,8 +31,6 @@
 
 #define TLENGTH 1024
 #define LIGHT_VELOCITY 0.3
-#define UT0 0 // UT time
-#define NUMBER_OF_INTERVALS 144
 
 using namespace std;
 
@@ -196,6 +194,16 @@ int main(int argc, char* argv[])
 	found=line.find_first_of("=");
 	string Path_to_result_files=line.substr(found+2).c_str();
 	printf("Path_to_result_files %s\n", line.substr(found+2).c_str());
+	
+	getline(inp, line);
+	found=line.find_first_of("=");
+	unsigned UT0=atoi(line.substr(found+2).c_str());
+	printf("UT0 %d\n", UT0);
+	
+	getline(inp, line);
+	found=line.find_first_of("=");
+	unsigned NUMBER_OF_INTERVALS=atoi(line.substr(found+2).c_str());
+	printf("NUMBER_OF_INTERVALS %d\n", NUMBER_OF_INTERVALS);
 
 	double Time_Step=6.0;
 
