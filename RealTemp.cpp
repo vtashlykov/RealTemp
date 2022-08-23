@@ -31,7 +31,8 @@
 
 #define TLENGTH 1024
 #define LIGHT_VELOCITY 0.3
-#define IT0 0 // UT time
+#define UT0 0 // UT time
+#define NUMBER_OF_INTERVALS 144
 
 using namespace std;
 
@@ -196,7 +197,6 @@ int main(int argc, char* argv[])
 	string Path_to_result_files=line.substr(found+2).c_str();
 	printf("Path_to_result_files %s\n", line.substr(found+2).c_str());
 
-	unsigned Number_Of_Intervals=144;
 	double Time_Step=6.0;
 
 	inp.close();
@@ -241,10 +241,10 @@ int main(int argc, char* argv[])
 		cmd="mkdir "+dir;
 		system(cmd.c_str());
 
-		cmd="rm /home/tashlykov/test/ConfigFile_*";
-		system(cmd.c_str());
-		cmd="rm /home/tashlykov/test/List_*";
-		system(cmd.c_str());
+		// cmd="rm /home/tashlykov/test/ConfigFile_*";
+		// system(cmd.c_str());
+		// cmd="rm /home/tashlykov/test/List_*";
+		// system(cmd.c_str());
 
 		cout<<"Total number of files is "<<NumberOfFiles<<"."<<endl;
 		unsigned start=0;
@@ -263,37 +263,37 @@ int main(int argc, char* argv[])
 		vector<vector<RadarChannelInfo> > Info;
 		vector<map<RadarChannelInfo, bool> > valid;
 		vector<map<RadarChannelInfo, vector<vecc> > > Matrix, R1;
-		valid.resize(Number_Of_Intervals);
-		Nsample.resize(Number_Of_Intervals);
-		Te_mean.resize(Number_Of_Intervals);
-		Tr_mean.resize(Number_Of_Intervals);
-		Norm.resize(Number_Of_Intervals);
-		Nsample2.resize(Number_Of_Intervals);
-		Hist.resize(Number_Of_Intervals);
-		Err.resize(Number_Of_Intervals);
-		Err1.resize(Number_Of_Intervals);
-		InterPol.resize(Number_Of_Intervals);
-		InterPol1.resize(Number_Of_Intervals);
-		Chi.resize(Number_Of_Intervals);
-		Chi1.resize(Number_Of_Intervals);
-		UT_hist.resize(Number_Of_Intervals);
-		RawPower.resize(Number_Of_Intervals);
-		Noise.resize(Number_Of_Intervals);
-		Info.resize(Number_Of_Intervals);
-		MHist.resize(Number_Of_Intervals);
-		DHist.resize(Number_Of_Intervals);
-		mHist.resize(Number_Of_Intervals);
-		dHist.resize(Number_Of_Intervals);
-		Kr.resize(Number_Of_Intervals);
-		height_s.resize(Number_Of_Intervals);
-		P_model.resize(Number_Of_Intervals);
-		Ne.resize(Number_Of_Intervals);
-		P_exp.resize(Number_Of_Intervals);
-		P_conv.resize(Number_Of_Intervals);
-		Aconst.resize(Number_Of_Intervals);
-		Bconst.resize(Number_Of_Intervals);
-		Matrix.resize(Number_Of_Intervals);
-		R1.resize(Number_Of_Intervals);
+		valid.resize(NUMBER_OF_INTERVALS);
+		Nsample.resize(NUMBER_OF_INTERVALS);
+		Te_mean.resize(NUMBER_OF_INTERVALS);
+		Tr_mean.resize(NUMBER_OF_INTERVALS);
+		Norm.resize(NUMBER_OF_INTERVALS);
+		Nsample2.resize(NUMBER_OF_INTERVALS);
+		Hist.resize(NUMBER_OF_INTERVALS);
+		Err.resize(NUMBER_OF_INTERVALS);
+		Err1.resize(NUMBER_OF_INTERVALS);
+		InterPol.resize(NUMBER_OF_INTERVALS);
+		InterPol1.resize(NUMBER_OF_INTERVALS);
+		Chi.resize(NUMBER_OF_INTERVALS);
+		Chi1.resize(NUMBER_OF_INTERVALS);
+		UT_hist.resize(NUMBER_OF_INTERVALS);
+		RawPower.resize(NUMBER_OF_INTERVALS);
+		Noise.resize(NUMBER_OF_INTERVALS);
+		Info.resize(NUMBER_OF_INTERVALS);
+		MHist.resize(NUMBER_OF_INTERVALS);
+		DHist.resize(NUMBER_OF_INTERVALS);
+		mHist.resize(NUMBER_OF_INTERVALS);
+		dHist.resize(NUMBER_OF_INTERVALS);
+		Kr.resize(NUMBER_OF_INTERVALS);
+		height_s.resize(NUMBER_OF_INTERVALS);
+		P_model.resize(NUMBER_OF_INTERVALS);
+		Ne.resize(NUMBER_OF_INTERVALS);
+		P_exp.resize(NUMBER_OF_INTERVALS);
+		P_conv.resize(NUMBER_OF_INTERVALS);
+		Aconst.resize(NUMBER_OF_INTERVALS);
+		Bconst.resize(NUMBER_OF_INTERVALS);
+		Matrix.resize(NUMBER_OF_INTERVALS);
+		R1.resize(NUMBER_OF_INTERVALS);
 
 		unsigned CurrentNumberOfFile;
 		vector<int> ThreadIsBuisy;
@@ -319,12 +319,12 @@ int main(int argc, char* argv[])
 			RadarChannelInfo info;
 			vector<unsigned> count;
 			
-			// schedule(static, Number_Of_Intervals/Number_of_threads)
+			// schedule(static, NUMBER_OF_INTERVALS/Number_of_threads)
 			
 			#pragma omp for schedule(dynamic)
-			for(size_t it=0; it<Number_Of_Intervals; it++)
+			for(size_t it=0; it<NUMBER_OF_INTERVALS; it++)
 			{
-				int Time_it=(it+IT0)*10;
+				int Time_it=(it+UT0)*10;
 				unsigned Pid=omp_get_thread_num();
 				string list;
 				count.resize(2);
@@ -484,7 +484,7 @@ int main(int argc, char* argv[])
 				iter_end=omp_get_wtime();
 				// #pragma omp flush(CurrentNumberOfFile)
 				printf("Processing for %d:%d UT by thread #%d.\nProcessing time is %g seconds.\n%f %% completed.\n\n",
-					Time_it/60, Time_it%60, Pid, iter_end-iter_start, 100.0*double(it)/double(Number_Of_Intervals));
+					Time_it/60, Time_it%60, Pid, iter_end-iter_start, 100.0*double(it)/double(NUMBER_OF_INTERVALS));
 
 				string current_time;
 				ostringstream tt;
@@ -637,22 +637,37 @@ int main(int argc, char* argv[])
 				string dir1="/home/tashlykov/test/", dir2="current/", dir3="archive/";
 				if(Nsample[it][info]>1000.0)
 				{
-					FileName=dir1+"List_"+to_string(omp_get_thread_num())+".txt";
+					FileName="List_"+to_string(omp_get_thread_num())+".txt";
 					out.open(FileName);
 					out<<List<<"\n";
 					out.close();
 					
 					inp.open("ConfigFile.cfg");
 					string line, str;
+					line.clear();
 					list.clear();
+					size_t found=0, found1=0;
 					while(!inp.eof())
 					{
 						getline(inp, line);
+						found=line.find("PathArchive");
+						if(found!=-1)
+						{
+							found1=line.find_first_of("/");
+							dir1=line.substr(found1, line.size()-found1);
+						}
+						found=line.find("PathCurrent");
+						if(found!=-1)
+						{
+							found1=line.find_first_of("/");
+							dir2=line.substr(found1, line.size()-found1);
+						}
 						list+=line+"\n";
 					}
 					inp.close();
+					printf("PathArchive %s\nPathCurrent %s\n", dir1.c_str(), dir2.c_str());
 					
-					size_t found=list.find("EndFile");
+					found=list.find("EndFile");
 					line=list.substr(found);
 					// printf("Pid %d: %s\n\n", omp_get_thread_num(), line.c_str());
 					found=line.find("1");
@@ -661,7 +676,7 @@ int main(int argc, char* argv[])
 					// printf("\t\t\t\tPid %d: %s\n", omp_get_thread_num(), line.c_str());
 					found=list.find("EndFile");
 					list.replace(found, list.size()-found, line);
-					FileName=dir1+"ConfigFile_"+to_string(omp_get_thread_num())+".cfg";
+					FileName="ConfigFile_"+to_string(omp_get_thread_num())+".cfg";
 					out.open(FileName);
 					out<<list<<"\n";
 					out.close();
@@ -670,17 +685,17 @@ int main(int argc, char* argv[])
 						printf("Filing config failed!\n");
 					inp.close();
 					
-					if(it==IT0)
+					if(it==UT0)
 					{
-						cmd="rm "+dir1+dir2+"current_*";
+						cmd="rm current_*";
 						system(cmd.c_str());
 						
-						cmd="rm "+dir1+dir3+"*.dat";
-						system(cmd.c_str());
+						// cmd="rm "+dir1+dir3+"*.dat";
+						// system(cmd.c_str());
 					}
 
-					cmd="./ise -s "+dir1+"List_"+to_string(omp_get_thread_num())\
-						+".txt "+dir1+"ConfigFile_"+to_string(omp_get_thread_num())+".cfg";
+					cmd="./ise -s List_"+to_string(omp_get_thread_num())\
+						+".txt ConfigFile_"+to_string(omp_get_thread_num())+".cfg";
 					printf("\n\t%s. Nsample %d.\n\n", cmd.c_str(), Nsample[it][info]);
 
 					double t0=omp_get_wtime();
@@ -711,7 +726,7 @@ int main(int argc, char* argv[])
 					RadarChannelInfo info=Info[it][m];
 					if(info.PulseLength<900)
 					{
-						FileName=dir1+dir2+"current_"+to_string(info.PulseFreq+300)+"_"\
+						FileName=dir1+"current_"+to_string(info.PulseFreq+300)+"_"\
 							+to_string(info.Channel+1)+"_"+to_string(omp_get_thread_num())+"_dat.dat";
 						inp.open(FileName);
 						valid[it][info]=inp.is_open();
@@ -771,7 +786,7 @@ int main(int argc, char* argv[])
 			#pragma omp barrier
 		}
 
-		for(size_t u=0; u<Number_Of_Intervals; u++)
+		for(size_t u=0; u<NUMBER_OF_INTERVALS; u++)
 		{
 			Matrix[u].clear();
 			R1[u].clear();
@@ -790,7 +805,7 @@ int main(int argc, char* argv[])
 		printf("CorMatrice are done for Pid %d!\n", omp_get_thread_num());
 
 		map<RadarChannelInfo, bool> Xinfo;
-		for(size_t u=0; u<Number_Of_Intervals; u++)
+		for(size_t u=0; u<NUMBER_OF_INTERVALS; u++)
 		{
 			for(size_t i=0; i<Info[u].size(); i++)
 			{
@@ -815,13 +830,13 @@ int main(int argc, char* argv[])
 			auto j=Xinfo.begin();
 			std::advance(j, m);
 			RadarChannelInfo info=j->first;
-			for(size_t it=0; it<Number_Of_Intervals; it++)
+			for(size_t it=0; it<NUMBER_OF_INTERVALS; it++)
 			{
 				if(Nsample[it].count(info)!=0)
 				{
 					out<<info.Channel<<"\t"<<info.PulseFreq<<"\t"<<info.PulseLength<<"\t";
 					out<<info.LengthOfData<<"\t"<<info.DecimationFreq<<"\t"<<info.TotalDelay<<"\t";
-					out<<double(it+IT0)/double(Time_Step)<<"\t";
+					out<<double(it+UT0)/double(Time_Step)<<"\t";
 					out<<Nsample[it][info]<<"\n";
 					// out<<real(Matrix[it][info][200][10])<<"\t";
 					// out<<InterPol[it][info][200][0]<<"\n";
@@ -851,14 +866,14 @@ int main(int argc, char* argv[])
 			printf("%s\n", FileName.c_str());
 			// printf("%d %d %d!!!\n", UT_hist[0].size(), MHist[0].size(), DHist[0].size());
 
-			for(size_t it=0; it<Number_Of_Intervals; it++)
+			for(size_t it=0; it<NUMBER_OF_INTERVALS; it++)
 			{
 				// printf("%d %d %d!!!\n", UT_hist[it][info].size(), MHist[it][info].size(), DHist[it][info].size());
 				if(Nsample[it].count(info)!=0)
 				{
 					for(size_t j=0; j<Nsample[it][info]; j++)
 					{
-						// out<<double(it+IT0)/double(Time_Step)<<"\t";
+						// out<<double(it+UT0)/double(Time_Step)<<"\t";
 						// out<<UT_hist[it][info][j]<<"\t";
 						out<<j<<"\t";
 						out<<MHist[it][info][j]<<"\t"<<DHist[it][info][j]<<"\t";
@@ -915,9 +930,9 @@ int main(int argc, char* argv[])
 				out<<"t_0_acf\t"<<"t_min_acf\t"<<"a_min_acf\t"<<"Noise_acf\t"<<"Misfit_acf\t";
 				out<<"Height_EST\t"<<"S/N_EST\t"<<"Te_EST\t"<<"Tr_EST\t"<<"t_0_EST\t"<<"t_min_EST\t"<<"a_min_EST\t";
 				out<<"Ne\t"<<"P_exp\t"<<"P_model\t"<<"P_conv\t"<<"\n";
-				for(size_t u=0; u<Number_Of_Intervals; u++)
+				for(size_t u=0; u<NUMBER_OF_INTERVALS; u++)
 				{
-					double ut=double(u+IT0)/double(Time_Step);
+					double ut=double(u+UT0)/double(Time_Step);
 					if(Nsample[u][info]>100)
 					{
 						Norm[u][info]=0.0;
@@ -1119,14 +1134,14 @@ int main(int argc, char* argv[])
 					out<<"Polynom_misfit_value\n";
 					double deltat=1000.0/double(info.DecimationFreq);
 					unsigned L=floor(double(info.PulseLength)/deltat);	
-					for(size_t u=0; u<Number_Of_Intervals; u++)
+					for(size_t u=0; u<NUMBER_OF_INTERVALS; u++)
 					{
 						// printf("%d\n", u);
 						if(Nsample[u][info]>100)
 						{	
 							for(size_t t=0; t<Tlength-L; t++)
 							{
-								out<<Date[d]<<"\t"<<double(u+IT0)/double(Time_Step)<<"\t";
+								out<<Date[d]<<"\t"<<double(u+UT0)/double(Time_Step)<<"\t";
 								out<<double(t)*deltat*LIGHT_VELOCITY/2.0+double(info.TotalDelay)*0.15<<"\t";
 								for(size_t p=0; p<POLY_DEGREE; p++)
 									out<<InterPol1[u][info][t][p]<<"\t"<<Err1[u][info][t][p]<<"\t";
@@ -1137,7 +1152,7 @@ int main(int argc, char* argv[])
 						{
 							for(size_t t=0; t<Tlength-L; t++)
 							{
-								out<<Date[d]<<"\t"<<double(u+IT0)/double(Time_Step)<<"\t";
+								out<<Date[d]<<"\t"<<double(u+UT0)/double(Time_Step)<<"\t";
 								out<<double(t)*deltat*LIGHT_VELOCITY/2.0+double(info.TotalDelay)*0.15<<"\t";
 								for(size_t p=0; p<POLY_DEGREE; p++)
 									out<<"nan\t"<<"nan\t";
@@ -1152,7 +1167,7 @@ int main(int argc, char* argv[])
 			#pragma omp barrier
 		}
 
-		for(size_t u=0; u<Number_Of_Intervals; u++)
+		for(size_t u=0; u<NUMBER_OF_INTERVALS; u++)
 		{
 			Chi[u].clear();
 			Chi1[u].clear();
