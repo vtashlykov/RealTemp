@@ -642,7 +642,9 @@ int main(int argc, char* argv[])
 				}
 
 				string cmd;
-				string dir1="/home/tashlykov/test/", dir2="current/", dir3="archive/";
+				string dir1, dir2;
+				dir1.clear();
+				dir2.clear();
 				if(Nsample[it][info]>1000.0)
 				{
 					FileName="List_"+to_string(omp_get_thread_num())+".txt";
@@ -661,13 +663,13 @@ int main(int argc, char* argv[])
 						found=line.find("PathArchive");
 						if(found!=-1)
 						{
-							found1=line.find_first_of("/");
+							found1=line.find_first_not_of(" ");
 							dir1=line.substr(found1, line.size()-found1);
 						}
 						found=line.find("PathCurrent");
 						if(found!=-1)
 						{
-							found1=line.find_first_of("/");
+							found1=line.find_first_not_of(" ");
 							dir2=line.substr(found1, line.size()-found1);
 						}
 						list+=line+"\n";
